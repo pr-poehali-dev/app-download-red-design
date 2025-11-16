@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import { Input } from '@/components/ui/input';
 import Icon from '@/components/ui/icon';
 
 interface App {
@@ -287,10 +288,14 @@ const categories = ['Все', 'Социальные', 'Игры', 'Инстру�
 
 const Index = () => {
   const [selectedCategory, setSelectedCategory] = useState('Все');
+  const [searchQuery, setSearchQuery] = useState('');
 
-  const filteredApps = selectedCategory === 'Все' 
-    ? apps 
-    : apps.filter(app => app.category === selectedCategory);
+  const filteredApps = apps
+    .filter(app => selectedCategory === 'Все' || app.category === selectedCategory)
+    .filter(app => 
+      app.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      app.description.toLowerCase().includes(searchQuery.toLowerCase())
+    );
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -306,6 +311,18 @@ const Index = () => {
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="mb-8">
+          <div className="mb-6">
+            <div className="relative max-w-md">
+              <Icon name="Search" size={20} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+              <Input
+                type="text"
+                placeholder="Поиск приложений..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="pl-10 h-12 text-base"
+              />
+            </div>
+          </div>
           <h2 className="text-xl font-semibold mb-4 text-gray-800">Категории</h2>
           <div className="flex flex-wrap gap-3">
             {categories.map(category => (
